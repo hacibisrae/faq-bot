@@ -35,3 +35,11 @@ def test_route_chat():
 def test_route_health():
     client = app.test_client()
     assert client.get("/health").get_json() == {"status": "ok"}
+
+
+def test_terraform():
+    assert "Infrastructure as Code" in repondre("Tu connais Terraform ?")
+
+
+def test_aws():
+    assert "Amazon" in repondre("c'est quoi AWS")

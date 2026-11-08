@@ -24,6 +24,12 @@ REGLES = [
      "Kubernetes orchestre des conteneurs : il les déploie, les redémarre et les met à l'échelle automatiquement."),
     (["ci/cd", "pipeline", "ci", "cd"],
      "Le CI/CD automatise les tests (CI) et le déploiement (CD) à chaque modification du code."),
+    (["linux"],
+     "Linux est un système d'exploitation open source, très utilisé sur les serveurs et dans le cloud."),
+    (["terraform"],
+     "Terraform est un outil d'Infrastructure as Code : on décrit l'infrastructure dans des fichiers, et Terraform la crée automatiquement."),
+    (["aws", "amazon"],
+     "AWS (Amazon Web Services) est la plateforme cloud d'Amazon : serveurs (EC2), stockage (S3), bases de données…"), 
     (["merci", "thanks"],
      "Avec plaisir ! 😊"),
     (["au revoir", "bye", "a bientot"],
@@ -32,7 +38,7 @@ REGLES = [
 
 REPONSE_PAR_DEFAUT = (
     "Désolé, je n'ai pas compris. Essaie avec un mot-clé comme : git, github, commit, "
-    "branche, docker, kubernetes ou pipeline."
+    "branche, docker, kubernetes, linux, terraform, aws ou pipeline."
 )
 
 
