@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ Bot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="chat">
+    <header>
+      <h1>🤖 FAQ Bot</h1>
+      <p>Pose une question sur Git, GitHub, Docker, Kubernetes ou le CI/CD</p>
+    </header>
+
+    <div id="messages" class="messages">
+      <div class="msg bot">Bonjour ! Comment puis-je t'aider ?</div>
+    </div>
+
+    <form id="formulaire">
+      <input id="saisie" type="text" placeholder="Écris ta question..." autocomplete="off" required>
+      <button type="submit">Envoyer</button>
+    </form>
+  </main>
+
+  <script>
+    const formulaire = document.getElementById("formulaire");
+    const saisie = document.getElementById("saisie");
+    const messages = document.getElementById("messages");
+
+    // Ajoute une bulle de message dans la conversation
+    function ajouterMessage(texte, auteur) {
+      const bulle = document.createElement("div");
+      bulle.className = "msg " + auteur;
+      bulle.textContent = texte;
+      messages.appendChild(bulle);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    formulaire.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const texte = saisie.value.trim();
+      if (!texte) return;
+
+      ajouterMessage(texte, "user");
+      saisie.value = "";
+
+      // Envoie la question au serveur Flask (route /chat)
+      const reponse = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: texte })
+      });
+      const donnees = await reponse.json();
+      ajouterMessage(donnees.reponse, "bot");
+    });
+  </script>
+</body>
+</html>
