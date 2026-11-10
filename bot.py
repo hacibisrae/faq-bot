@@ -29,7 +29,7 @@ REGLES = [
     (["terraform"],
      "Terraform est un outil d'Infrastructure as Code : on décrit l'infrastructure dans des fichiers, et Terraform la crée automatiquement."),
     (["aws", "amazon"],
-     "AWS (Amazon Web Services) est la plateforme cloud d'Amazon : serveurs (EC2), stockage (S3), bases de données…"), 
+     "AWS (Amazon Web Services) est la plateforme cloud d'Amazon : serveurs (EC2), stockage (S3), bases de données…"),
     (["merci", "thanks"],
      "Avec plaisir ! 😊"),
     (["au revoir", "bye", "a bientot"],
