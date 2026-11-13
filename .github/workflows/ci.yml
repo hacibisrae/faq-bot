@@ -54,4 +54,36 @@ jobs:
 
       - name: Afficher les logs du conteneur
         if: always()
-        run: docker logs faq-bot      
+        run: docker logs faq-bot    
+
+  publish:
+    name: Publication de l'image sur ghcr.io
+    runs-on: ubuntu-latest
+    needs: docker
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    permissions:
+      contents: read
+      packages: write
+
+    env:
+      IMAGE: ghcr.io/${{ github.repository_owner }}/faq-bot
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v5
+
+      - name: Connexion à ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Construire l'image
+        run: docker build -t $IMAGE:latest -t $IMAGE:${{ github.sha }} .
+
+      - name: Publier l'image
+        run: |
+          docker push $IMAGE:latest
+          docker push $IMAGE:${{ github.sha }}          
