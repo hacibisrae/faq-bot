@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: faq-bot
+spec:
+  type: ClusterIP
+  selector:
+    app: faq-bot
+  ports:
+    - port: 80
+      targetPort: 5000
