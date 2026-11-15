@@ -86,4 +86,50 @@ jobs:
       - name: Publier l'image
         run: |
           docker push $IMAGE:latest
-          docker push $IMAGE:${{ github.sha }}          
+          docker push $IMAGE:${{ github.sha }}      
+  deploy:
+    name: Déploiement sur Kubernetes (kind)
+    runs-on: ubuntu-latest
+    needs: publish
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    env:
+      IMAGE: ghcr.io/${{ github.repository_owner }}/faq-bot
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v5
+
+      - name: Créer un cluster Kubernetes avec kind
+        uses: helm/kind-action@v1
+        with:
+          cluster_name: faq-bot
+
+      - name: Vérifier le cluster
+        run: |
+          kubectl cluster-info
+          kubectl get nodes
+
+      - name: Déployer l'application
+        run: |
+          kubectl apply -f k8s/
+          kubectl set image deployment/faq-bot faq-bot=$IMAGE:${{ github.sha }}
+
+      - name: Attendre que le déploiement soit prêt
+        run: kubectl rollout status deployment/faq-bot --timeout=120s
+
+      - name: Afficher les ressources
+        run: kubectl get deployments,pods,services -o wide
+
+      - name: Tester l'application déployée
+        run: |
+          kubectl port-forward service/faq-bot 8080:80 &
+          sleep 5
+          curl --fail http://localhost:8080/health
+          curl --fail -X POST http://localhost:8080/chat -H "Content-Type: application/json" -d '{"message": "kubernetes"}'
+
+      - name: Diagnostic en cas d'échec
+        if: failure()
+        run: |
+          kubectl describe pods -l app=faq-bot
+          kubectl logs -l app=faq-bot --tail=50              
